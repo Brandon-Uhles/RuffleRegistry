@@ -1,50 +1,62 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import { invoke } from "@tauri-apps/api/core";
-import "./App.css";
+import ProductTable from "./features/product-page/productTable";
+
+interface Product {
+  id: string;
+  sku: string;
+  name: string;
+  category: string;
+  status: string;
+  description?: string;
+  photoUrl?: string;
+}
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
+  // simple pagination state
+  const [page, setPage] = useState(1);
+  const [loading] = useState(false);
 
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", { name }));
-  }
+  // temporary mock data
+  const products: Product[] = [
+    {
+      id: "1",
+      sku: "CUFF-BLK-01",
+      name: "Black Lace Wrist Cuff",
+      category: "Accessories",
+      status: "In Stock",
+      description: "Handmade lace wrist cuff. Soft cotton lace.",
+      photoUrl: "https://via.placeholder.com/150",
+    },
+    {
+      id: "2",
+      sku: "CUFF-WHT-02",
+      name: "White Frill Wrist Cuff",
+      category: "Accessories",
+      status: "In Production",
+      description: "Frilled white cuffs, perfect for sweet lolita.",
+      photoUrl: "https://via.placeholder.com/150",
+    },
+    {
+      id: "3",
+      sku: "SKIRT-PNK-01",
+      name: "Pink Ruffle Skirt",
+      category: "Bottoms",
+      status: "Sold Out",
+      description: "Cute ruffle skirt with satin bow trim.",
+    },
+  ];
 
   return (
-    <main className="container">
-      <h1>Welcome to Tauri + React</h1>
+    <div style={{ padding: "2rem" }}>
+      <h1>Product Inventory</h1>
 
-      <div className="row">
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
-
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <button type="submit">Greet</button>
-      </form>
-      <p>{greetMsg}</p>
-    </main>
+      <ProductTable
+        products={products}
+        page={page}
+        setPage={setPage}
+        loading={loading}
+      />
+    </div>
   );
 }
 
